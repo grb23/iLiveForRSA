@@ -51,15 +51,16 @@ void writeToFile(BigUnsigned x, BigUnsigned y, std::string filename) {
     return;
 }
 
-BigUnsigned testE(BigUnsigned x, BigUnsigned y) {
-    BigUnsigned irp = gcd(x, y);
+bool testE(BigUnsigned e, BigUnsigned phi_n) {
+    BigUnsigned irp = gcd(e, phi_n);
     while(irp != 1) {
-        x=x+2;
-        testE(x, y);
-        std::cout << x << std::endl << std::endl;
+        e=e+2;
+        testE(e, phi_n);
+        std::cout << e << std::endl << std::endl;
+        irp = gcd(e, phi_n);
     }
     
-    return x;
+    return true;
 }
 
 int main() {
@@ -115,8 +116,8 @@ int main() {
         
         BigUnsigned n = p*q;
         BigUnsigned phi_n = (p-1)*(q-1);
-        BigUnsigned e = 438727;
-        e = testE(e, phi_n);
+        BigUnsigned e = 65537;
+        testE(e, phi_n);
         std::cout << "e: " << e << '\n';
         
         BigUnsigned d = modinv(e, phi_n);
