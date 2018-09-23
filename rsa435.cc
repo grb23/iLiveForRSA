@@ -1,4 +1,11 @@
 // You need to complete this program for a part of your first project.
+//
+// Niko Ruhe
+// RSA Project 1 Part 1
+// Dr. Duan
+// Algorithms Class
+// Spring2018
+// 02/14/2018
 
 // Standard libraries
 #include <string>
@@ -6,128 +13,132 @@
 #include <stdlib.h>
 #include <fstream>
 
+
 // `BigIntegerLibrary.hh' includes all of the library headers.
 #include "BigIntegerLibrary.hh"
 
-BigUnsigned generate(BigUnsigned x) {
-    
-    BigUnsigned X = BigUnsigned(2);
-    for(int i=1; i<256; i++) {
-        x = (x*10) + rand() % 10;
-    }
-    x = (x*10)+7;
-    
-    return x;
-}
-
-BigUnsigned testPrime(BigUnsigned x, BigUnsigned a) {
-    
-    BigUnsigned test = BigUnsigned(0);
-    BigUnsigned exp = x-1;
-    
-    test = modexp(a, exp, x);
-    
-    while(test!=1) {
-        //x=x+10;
-        //test = modexp(a, exp, x);
-        
-        test = BigUnsigned(0);
-        for(int i=1; i<256; i++) {
-            test = (x*10) + rand() % 10;
+// checks to see if fermat test results in a likely prime number
+bool fermat(BigUnsigned maybePrime, BigInteger a1, BigInteger a2) {
+    // use this test to determine if the number is prime
+    BigUnsigned answer = modexp(a1, maybePrime - 1, maybePrime);
+    if (answer == 1) {
+        answer = modexp(a2, maybePrime- 1, maybePrime);
+        if (answer == 1) {
+            return true;
         }
-        test = (x*10)+7;
-//        std::cout << "test: " << test << '\n';
+    }
+    return false;
+}
+
+BigUnsigned checkE(BigUnsigned phi, BigUnsigned e) {
+    //make sure the gcd of the public key and the totient is 1
+    if (e == 0) {
+        return phi;
+    }
+    else if(phi == 0){
+        return 0;
+    }
+    return checkE(e, phi % e);
+}
+
+void makeLargePrime(BigUnsigned& bigNum, BigInteger a1, BigInteger a2) {
+    while (1) {
+        //use 278 digits to get a number at least 1024 bits
+        for (int i = 0; i < 278; i++) {
+            bigNum = bigNum * 10 + (rand() % 10);
+        }
+        //force the number to end in 7 (more likely to hit primes, and reduce search time)
+        bigNum = (bigNum * 10) + 7;
         
-        test = modexp(a, exp, x);
+        if (fermat(bigNum, a1, a2)) {
+            //big1 is prime, move on
+            break;
+        }
+        else {
+            bigNum = BigUnsigned(1);
+        }
     }
-    std::cout << "prime: " << x << '\n';
-    
-    return x;
 }
 
-void writeToFile(BigUnsigned x, BigUnsigned y, std::string filename) {
-    
-    std::ofstream file;
-    file.open (filename);
-    file << x << '\n';
-    file << y;
-    file.close();
-    
-    return;
-}
-
-BigUnsigned testE(BigUnsigned x, BigUnsigned y) {
-    BigUnsigned irp = gcd(x, y);
-    while(irp != 1) {
-        x=x+2;
-        testE(x, y);
-        std::cout << x << std::endl << std::endl;
-    }
-    
-    return x;
+void makeOutputFile(char* fileName, BigUnsigned num1, BigUnsigned num2) {
+    std::ofstream outfile(fileName);
+    outfile << num1 << std::endl;
+    outfile << num2 << std::endl;
+    outfile.close();
 }
 
 int main() {
-	/* The library throws `const char *' error messages when things go
-	 * wrong.  It's a good idea to catch them using a `try' block like this
-	 * one.  Your C++ compiler might need a command-line option to compile
-	 * code that uses exceptions. */
-	/*try {
-		      
-      std::cout << "a couple of test cases for 3460:435/535 Algorithms!!!\n";
-      BigInteger big1 = BigInteger(1);
-      for (int i=0;i<400;i++) {
-         big1 = big1*10 +rand();
-      }
-      std::cout << "my big1 !!!\n";
-      std::cout << big1;
-      BigInteger big2 = BigInteger(1);
-      for (int i=0;i<400;i++) {
-         big2 = big2*10 +rand();
-      }
-      std::cout << "my big2 !!!\n";
-      std::cout << big2;
-      std::cout << "my big3 = big1*big2 !!!\n";
-      BigInteger big3 = big1*big2;
-      std::cout <<big3;
-      std::cout << "my big3/big2 !!!\n";
-      std::cout <<big3/big2;
-      
-	} catch(char const* err) {
-		std::cout << "The library threw an exception:\n"
-			<< err << std::endl;
-	}
-        */
+    /* The library throws `const char *' error messages when things go
+     * wrong.  It's a good idea to catch them using a `try' block like this
+     * one.  Your C++ compiler might need a command-line option to compile
+     * code that uses exceptions. */
+    try {
         
-        BigUnsigned p = BigUnsigned(1);
-        p = generate(p);
-        std::cout << "p: " << p << '\n';
+        std::cout << "a couple of test cases for 3460:435/535 Algorithms!!!\n";
+        BigUnsigned big1 = BigUnsigned(1);
+        BigInteger a1 = 2, a2 = 7;
         
-        BigUnsigned q = BigUnsigned(1);
-        q = generate(q);
-        std::cout << "q: " << q << '\n';
+        makeLargePrime(big1, a1, a2);
         
-        BigUnsigned a1 = BigUnsigned(2);
-        BigUnsigned a2 = BigUnsigned(7);
+        //test case
+        //big1 = 11;
+        std::cout << "my big1 !!!\n";
+        std::cout << big1;
+        std::cout << "\n";
+        BigUnsigned big2 = BigUnsigned(1);
         
-        p = testPrime(p, a1);
-        p = testPrime(p, a2);
-        q = testPrime(q, a1);
-        q = testPrime(q, a2);
-
-        writeToFile(p, q, "p_q.txt");
+        makeLargePrime(big2, a1, a2);
         
-        BigUnsigned n = p*q;
-        BigUnsigned phi_n = (p-1)*(q-1);
-        BigUnsigned e = 438727;
-        e = testE(e, phi_n);
-        std::cout << "e: " << e << '\n';
+        //test case
+        //big2 = 5;
+        std::cout << "my big2 !!!\n";
+        std::cout << big2;
+        std::cout << "\n";
+        std::cout << "The two numbers are both prime \n";
         
-        BigUnsigned d = modinv(e, phi_n);
-        std::cout << "d: " << d << '\n';
+        //output the prime numbers files
+        makeOutputFile("p_q.txt", big1, big2);
         
-        writeToFile(e, n, "e_n.txt");
-        writeToFile(d, n, "d_n.txt");
+        //calculate the totient
+        BigUnsigned a = (big1 - 1) * (big2 - 1);
+        std::cout << "The totient is a = (big1 - 1) * (big2 - 1) \n";
+        std::cout << a << std::endl;
         
-	return 0;
+        //calculate the modulus
+        std::cout << "n = big1*big2 !!!\n";
+        BigUnsigned n = big1*big2;
+        std::cout << n;
+        std::cout << std::endl;
+        
+        //I use a common public key of 65537. It is relatively prime to the totient
+        //I check that later to confirm with my checkE function
+        BigUnsigned e = 65537; //prime number stored as public key
+        
+        //check to see if e is relatively prime to a (the totient)
+        if (checkE(a, e) == 1) {
+            std::cout << "Good Public Key \n";
+        }
+        else {
+            std::cout << "Bad Public Key \n";
+        }
+        
+        //calculate the private key by using modinv and extended euclidean of public key and totient
+        BigUnsigned d = modinv(e, a);
+        
+        std::cout << "The private key is: \n";
+        std::cout << d;
+        
+        //output the public key
+        makeOutputFile("e_n.txt", e, n);
+        
+        //output the private key
+        makeOutputFile("d_n.txt", d, n);
+        
+    } catch(char const* err) {
+        std::cout << "The library threw an exception:\n"
+        << err << std::endl;
+    }
+    
+    return 0;
 }
+
