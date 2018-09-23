@@ -22,20 +22,18 @@ BigUnsigned generate(BigUnsigned x) {
 
 BigUnsigned testPrime(BigUnsigned x, BigUnsigned a) {
     
-    BigUnsigned test = BigUnsigned(0);
+    BigUnsigned test = BigUnsigned(1);
     BigUnsigned exp = x-1;
     
     test = modexp(a, exp, x);
-    
+    int upper = 1;
     while(test!=1) {
         //x=x+10;
         //test = modexp(a, exp, x);
         
-        test = BigUnsigned(0);
-        for(int i=1; i<256; i++) {
-            test = (x*10) + rand() % 10;
-        }
-        test = (x*10)+7;
+        test = BigUnsigned(upper);
+        test = generate(test);
+        upper++;
 //        std::cout << "test: " << test << '\n';
         
         test = modexp(a, exp, x);
