@@ -1,0 +1,72 @@
+called: /usr/bin/g++
+	/Users/gwendolynbrunot/Downloads/bigInt435
+	/usr/bin/g++
+	-c
+	-O2
+	-Wall
+	-Wextra
+	-pedantic
+	BigUnsigned.cc
+
+called: /usr/bin/g++
+	/Users/gwendolynbrunot/Downloads/bigInt435
+	/usr/bin/g++
+	-c
+	-O2
+	-Wall
+	-Wextra
+	-pedantic
+	BigInteger.cc
+
+called: /usr/bin/g++
+	/Users/gwendolynbrunot/Downloads/bigInt435
+	/usr/bin/g++
+	-c
+	-O2
+	-Wall
+	-Wextra
+	-pedantic
+	BigIntegerAlgorithms.cc
+
+called: /usr/bin/g++
+	/Users/gwendolynbrunot/Downloads/bigInt435
+	/usr/bin/g++
+	-c
+	-O2
+	-Wall
+	-Wextra
+	-pedantic
+	BigUnsignedInABase.cc
+
+called: /usr/bin/g++
+	/Users/gwendolynbrunot/Downloads/bigInt435
+	/usr/bin/g++
+	-c
+	-O2
+	-Wall
+	-Wextra
+	-pedantic
+	BigIntegerUtils.cc
+
+called: /usr/bin/g++
+	/Users/gwendolynbrunot/Downloads/bigInt435
+	/usr/bin/g++
+	-c
+	-O2
+	-Wall
+	-Wextra
+	-pedantic
+	rsa435.cc
+
+called: /usr/bin/g++
+	/Users/gwendolynbrunot/Downloads/bigInt435
+	/usr/bin/g++
+	rsa435.o
+	BigUnsigned.o
+	BigInteger.o
+	BigIntegerAlgorithms.o
+	BigUnsignedInABase.o
+	BigIntegerUtils.o
+	-o
+	rsa435
+
