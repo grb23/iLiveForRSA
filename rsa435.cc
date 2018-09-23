@@ -9,36 +9,33 @@
 // `BigIntegerLibrary.hh' includes all of the library headers.
 #include "BigIntegerLibrary.hh"
 
-BigUnsigned generate(BigUnsigned x) {
+bool testPrime(BigUnsigned x, BigInteger a1, BigInteger a2) {
     
-    BigUnsigned X = BigUnsigned(2);
-    for(int i=1; i<256; i++) {
-        x = (x*10) + rand() % 10;
+    BigUnsigned test = modexp(a1, x-1, x);
+    
+    if(test == 1) {
+        test = modexp(a2, x-1, x);
+        if(test == 1) {
+            return true;
+        }
     }
-    x = (x*10)+7;
-    
-    return x;
+    return false;
 }
 
-BigUnsigned testPrime(BigUnsigned x, BigUnsigned a) {
+BigUnsigned generate(BigUnsigned x, BigInteger a1, BigInteger a2) {
     
-    BigUnsigned test = BigUnsigned(1);
-    BigUnsigned exp = x-1;
-    
-    test = modexp(a, exp, x);
-    int upper = 1;
-    while(test!=1) {
-        //x=x+10;
-        //test = modexp(a, exp, x);
+    while(1) {
+        for(int i=0; i<278; i++) {
+            x = (x*10) + (rand() % 10);
+        }
+        x = (x*10)+7;
         
-        test = BigUnsigned(upper);
-        test = generate(test);
-        upper++;
-//        std::cout << "test: " << test << '\n';
-        
-        test = modexp(a, exp, x);
+        if(testPrime(x, a1, a2)) {
+            break;
+        }
+        else
+            x=BigUnsigned(1);
     }
-    std::cout << "prime: " << x << '\n';
     
     return x;
 }
@@ -98,20 +95,21 @@ int main() {
         */
         
         BigUnsigned p = BigUnsigned(1);
-        p = generate(p);
-        std::cout << "p: " << p << '\n';
-        
         BigUnsigned q = BigUnsigned(1);
-        q = generate(q);
+        BigInteger a1 = 2;
+        BigInteger a2 = 7;
+    
+        p = generate(p, a1, a2);
+        std::cout << "p: " << p << '\n';
+    
+        q = generate(q, a1, a2);
         std::cout << "q: " << q << '\n';
+        std::cout << "gosh gordon, we done it" << '\n';
         
-        BigUnsigned a1 = BigUnsigned(2);
-        BigUnsigned a2 = BigUnsigned(7);
-        
-        p = testPrime(p, a1);
-        p = testPrime(p, a2);
-        q = testPrime(q, a1);
-        q = testPrime(q, a2);
+//        p = testPrime(p, a1);
+//        p = testPrime(p, a2);
+//        q = testPrime(q, a1);
+//        q = testPrime(q, a2);
 
         writeToFile(p, q, "p_q.txt");
         
