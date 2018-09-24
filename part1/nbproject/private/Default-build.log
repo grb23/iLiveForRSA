@@ -1,0 +1,129 @@
+g++ -c -O2 -Wall -Wextra -pedantic BigUnsigned.cc
+In file included from BigUnsigned.cc:1:
+./BigUnsigned.hh:23:24: warning: access declarations are deprecated; use using declarations instead [-Wdeprecated]
+        NumberlikeArray<Blk>::N;
+                              ^
+        using 
+./BigUnsigned.hh:87:24: warning: access declarations are deprecated; use using declarations instead [-Wdeprecated]
+        NumberlikeArray<Blk>::getCapacity;
+                              ^
+        using 
+./BigUnsigned.hh:88:24: warning: access declarations are deprecated; use using declarations instead [-Wdeprecated]
+        NumberlikeArray<Blk>::getLength;
+                              ^
+        using 
+3 warnings generated.
+g++ -c -O2 -Wall -Wextra -pedantic BigInteger.cc
+In file included from BigInteger.cc:1:
+In file included from ./BigInteger.hh:4:
+./BigUnsigned.hh:23:24: warning: access declarations are deprecated; use using declarations instead [-Wdeprecated]
+        NumberlikeArray<Blk>::N;
+                              ^
+        using 
+./BigUnsigned.hh:87:24: warning: access declarations are deprecated; use using declarations instead [-Wdeprecated]
+        NumberlikeArray<Blk>::getCapacity;
+                              ^
+        using 
+./BigUnsigned.hh:88:24: warning: access declarations are deprecated; use using declarations instead [-Wdeprecated]
+        NumberlikeArray<Blk>::getLength;
+                              ^
+        using 
+3 warnings generated.
+g++ -c -O2 -Wall -Wextra -pedantic BigIntegerAlgorithms.cc
+In file included from BigIntegerAlgorithms.cc:1:
+In file included from ./BigIntegerAlgorithms.hh:4:
+In file included from ./BigInteger.hh:4:
+./BigUnsigned.hh:23:24: warning: access declarations are deprecated; use using declarations instead [-Wdeprecated]
+        NumberlikeArray<Blk>::N;
+                              ^
+        using 
+./BigUnsigned.hh:87:24: warning: access declarations are deprecated; use using declarations instead [-Wdeprecated]
+        NumberlikeArray<Blk>::getCapacity;
+                              ^
+        using 
+./BigUnsigned.hh:88:24: warning: access declarations are deprecated; use using declarations instead [-Wdeprecated]
+        NumberlikeArray<Blk>::getLength;
+                              ^
+        using 
+3 warnings generated.
+g++ -c -O2 -Wall -Wextra -pedantic BigUnsignedInABase.cc
+In file included from BigUnsignedInABase.cc:1:
+In file included from ./BigUnsignedInABase.hh:5:
+./BigUnsigned.hh:23:24: warning: access declarations are deprecated; use using declarations instead [-Wdeprecated]
+        NumberlikeArray<Blk>::N;
+                              ^
+        using 
+./BigUnsigned.hh:87:24: warning: access declarations are deprecated; use using declarations instead [-Wdeprecated]
+        NumberlikeArray<Blk>::getCapacity;
+                              ^
+        using 
+./BigUnsigned.hh:88:24: warning: access declarations are deprecated; use using declarations instead [-Wdeprecated]
+        NumberlikeArray<Blk>::getLength;
+                              ^
+        using 
+In file included from BigUnsignedInABase.cc:1:
+./BigUnsignedInABase.hh:103:26: warning: access declarations are deprecated; use using declarations instead [-Wdeprecated]
+        NumberlikeArray<Digit>::getCapacity;
+                                ^
+        using 
+./BigUnsignedInABase.hh:104:26: warning: access declarations are deprecated; use using declarations instead [-Wdeprecated]
+        NumberlikeArray<Digit>::getLength;
+                                ^
+        using 
+5 warnings generated.
+g++ -c -O2 -Wall -Wextra -pedantic BigIntegerUtils.cc
+In file included from BigIntegerUtils.cc:1:
+In file included from ./BigIntegerUtils.hh:4:
+In file included from ./BigInteger.hh:4:
+./BigUnsigned.hh:23:24: warning: access declarations are deprecated; use using declarations instead [-Wdeprecated]
+        NumberlikeArray<Blk>::N;
+                              ^
+        using 
+./BigUnsigned.hh:87:24: warning: access declarations are deprecated; use using declarations instead [-Wdeprecated]
+        NumberlikeArray<Blk>::getCapacity;
+                              ^
+        using 
+./BigUnsigned.hh:88:24: warning: access declarations are deprecated; use using declarations instead [-Wdeprecated]
+        NumberlikeArray<Blk>::getLength;
+                              ^
+        using 
+In file included from BigIntegerUtils.cc:2:
+./BigUnsignedInABase.hh:103:26: warning: access declarations are deprecated; use using declarations instead [-Wdeprecated]
+        NumberlikeArray<Digit>::getCapacity;
+                                ^
+        using 
+./BigUnsignedInABase.hh:104:26: warning: access declarations are deprecated; use using declarations instead [-Wdeprecated]
+        NumberlikeArray<Digit>::getLength;
+                                ^
+        using 
+5 warnings generated.
+g++ -c -O2 -Wall -Wextra -pedantic rsa435.cc
+In file included from rsa435.cc:10:
+In file included from ./BigIntegerLibrary.hh:4:
+./BigUnsigned.hh:23:24: warning: access declarations are deprecated; use using declarations instead [-Wdeprecated]
+        NumberlikeArray<Blk>::N;
+                              ^
+        using 
+./BigUnsigned.hh:87:24: warning: access declarations are deprecated; use using declarations instead [-Wdeprecated]
+        NumberlikeArray<Blk>::getCapacity;
+                              ^
+        using 
+./BigUnsigned.hh:88:24: warning: access declarations are deprecated; use using declarations instead [-Wdeprecated]
+        NumberlikeArray<Blk>::getLength;
+                              ^
+        using 
+In file included from rsa435.cc:10:
+In file included from ./BigIntegerLibrary.hh:7:
+./BigUnsignedInABase.hh:103:26: warning: access declarations are deprecated; use using declarations instead [-Wdeprecated]
+        NumberlikeArray<Digit>::getCapacity;
+                                ^
+        using 
+./BigUnsignedInABase.hh:104:26: warning: access declarations are deprecated; use using declarations instead [-Wdeprecated]
+        NumberlikeArray<Digit>::getLength;
+                                ^
+        using 
+rsa435.cc:44:2: warning: no newline at end of file [-Wnewline-eof]
+}
+ ^
+6 warnings generated.
+g++ rsa435.o BigUnsigned.o BigInteger.o BigIntegerAlgorithms.o BigUnsignedInABase.o BigIntegerUtils.o -o rsa435
