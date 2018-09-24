@@ -18,6 +18,98 @@ using std::endl;
 
 using namespace std;
 
+void signFile(const char* file) {
+    std::ifstream myfile (file, std::ios::binary);
+    std::string data((std::istreambuf_iterator<char>(inFile)), std::istreambuf_iterator<char>());
+    if(data.empty()) {
+        throw("invalid file");
+    }
+    myfile.close();
+}
+
+string sha = sha256(data);
+cout << sha << endl;
+
+BigUnsigned sha_BigUnsigned = stringToBigUnsigned16(sha);
+cout << sha_BigUnsigned << endl;
+
+ifstream d_n;
+d_n.open("d_n.txt");
+string line;
+
+//get d from Private Key
+getline(d_n, line);
+string d = line;
+cout << "d: " << d << endl << endl;
+
+//get n from Private Key
+getline(d_n, line);
+string n = line;
+cout << "n: " << n << endl << endl;
+
+BigUnsigned d_BigUnsigned = stringToBigUnsigned10(d);
+BigUnsigned n_BigUnsigned = stringToBigUnsigned10(n);
+
+BigUnsigned M = modexp(sha_BigUnsigned, d_BigUnsigned, n_BigUnsigned);
+cout << "M: " << M << endl;
+
+ofstream M_file;
+M_file.open ("M_file.txt.signature");
+M_file << M << endl;
+M_file.close();
+
+bool verifySig(const char* message, const char* signfile) {
+    std::ifstream file(message, std::ios::binary);
+    std::string data((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+    if(data.empty()) {
+        throw("invalid file");
+    }
+    file.close();
+    
+    string temp = sha256(data);
+    cout << "temp: " << temp << endl;
+    
+    BigUnsigned temp_BigUnsigned = stringToBigUnsigned16(temp);
+    cout << temp_BigUnsigned << endl;
+    
+    std::ifstream signedFile;
+    signedFile.open(signFile);
+    
+    string line;
+    std::getline(signedFile, line);
+    
+    BigUnsigned sig_BigUnsigned = stringToBigUnsigned10(line);
+    cout << "sig_BigUnsigned: " << sig_BigUnsigned << endl;
+    signedFile.close();
+    
+    ifstream e_n;
+    e_n.open("e_n.txt");
+    
+    //get e from Public Key
+    getline(e_n, line);
+    string e = line;
+    cout << "e: " << e << endl << endl;
+    
+    //get n from Public Key
+    getline(e_n, line);
+    string n = line;
+    cout << "n: " << n << endl << endl;
+    
+    BigUnsigned e_BigUnsigned = stringToBigUnsigned10(e);
+    BigUnsigned n_BigUnsigned = stringToBigUnsigned10(n);
+    
+    e_n.close();
+    
+    sig_BigUnsigned decrypt = modexp(sig_BigUnsigned, e_BigUnsigned, n_BigUnsigned);
+    cout << "decrypt" << decrypt << endl;
+    
+    if(decrypt == temp_BigUnsigned) {
+        return true;
+    }
+    else
+        false;
+}
+
 int numDigits(int number)
 {
     int digits = 0;
@@ -50,163 +142,21 @@ BigInteger convertHash(string hash, int pos) {
  
 int main(int argc, char *argv[])
 {
-    /*
-    string input = "grape    sha256('grape'):0f78fcc486f5315418fbf095e71c0675ee07d318e5ac4d150050cd8e57966496";
-    string output1 = sha256(input);
- 
-    cout << "sha256('"<< input << "'):" << output1 << endl;
     
-    while(output1.empty() != 0) {
-        string sub1 = output1.substr(16);
-        cout << sub1 << '\n';
-        BigInteger ;
-        bint += stringToBigInteger(sub1);
-     }*/
-    
-    ifstream message;
-    message.open("message.txt");
-    
-    /*
-    stringstream ss;
-    ss << message.rdbuf();
-    string s = ss.str();
-    cout << s << '\n' << '\n';
-     */
-    
-    string line_m;
-    getline(message, line_m);
-    string s = line_m;
-    cout << "message: " << s << '\n' << '\n';
-    
-    string sha = sha256(s);
-    cout << "hash: " << sha << '\n' << '\n';
-    
-    ifstream d_n;
-    d_n.open("d_n.txt");
-    
-    //get d from Private Key
-    string line;
-    getline(d_n, line);
-    string d = line;
-    cout << "d: " << d << endl << endl;
-    
-    //get n from Private Key
-    getline(d_n, line);
-    string n = line;
-    cout << "n: " << n << endl << endl;
-    
-    ifstream e_n;
-    e_n.open("e_n.txt");
-    
-    //get e from Private Key
-    getline(e_n, line);
-    string e = line;
-    cout << "e: " << e << endl << endl;
-    
-    ifstream p_q;
-    p_q.open("p_q.txt");
-    
-    //get p from Public Key
-    getline(p_q, line);
-    string p = line;
-    cout << "p: " << p << endl << endl;
-    
-    //get q from Public Key
-    getline(p_q, line);
-    string q = line;
-    cout << "q: " << q << endl << endl;
-    
-    BigUnsigned d_BigUnsigned = stringToBigUnsigned(d);
-    BigUnsigned e_BigUnsigned = stringToBigUnsigned(e);
-    BigUnsigned n_BigUnsigned = stringToBigUnsigned(n);
-    
-    BigUnsigned p_BigUnsigned = stringToBigUnsigned(p);
-    BigUnsigned q_BigUnsigned = stringToBigUnsigned(q);
-
-    BigInteger sha_BigInteger = convertHash(sha, 0);
-    cout << "sha big integer: " << sha_BigInteger << endl << endl;
-    
-    //decrypt message
-    BigUnsigned M = modexp(sha_BigInteger, d_BigUnsigned, n_BigUnsigned);
-    
-    string M_string = bigUnsignedToString(M);
-    
-    ofstream M_file;
-    M_file.open ("M_file.txt");
-    M_file << M_string;
-    M_file.close();
-    
-    cout << "M: " << M << endl << endl;
-    cout << "M string: " << M_string << endl << endl;
-    
-   std::string filename = "M_file.txt";
-   std::ifstream myfile (filename.c_str(), std::ios::binary);
-   std::streampos begin,end;
-   begin = myfile.tellg();
-   myfile.seekg (0, std::ios::end);
-   end = myfile.tellg();
-   std::streampos size = end-begin; //size of the file in bytes   
-   myfile.seekg (0, std::ios::beg);
-   
-   char * memblock = new char[size];
-   myfile.read (memblock, size); //read the entire file
-   memblock[size]='\0'; //add a terminator
-   myfile.close();
-   
-   //check what's in the block
-   string str(memblock);
-   std::cout << str; 
-   std::cout << "\nthe content " << endl << endl;
-   
-   //----------------------- add signature to the content and save
-   std::string filename2 = filename+".signed";
-   std::ofstream myfile2 (filename2.c_str(), std::ios::binary);
-   myfile2.write (memblock, size);
-   int sigLength = 1024;
-   char * signature = new char[sigLength];
-   string sig = "Gwendolyn";
-   strcpy(signature, sig.c_str());
-   myfile2.write (signature, sigLength); //write sig in a block of 1024 bytes
-   
-  //char oldname[] ="M_file.txt.signed";
-  //char newname[] ="M_file_signed.txt";
-  //myfile2 = rename(oldname , newname);
-   
-   string m_line;
-   ifstream m_file_signed;
-   
-   ofstream outfile("M_file_signed.txt");
-   outfile << myfile2;
-   
-   m_file_signed.open("M_file_signed.txt");
-   
-   getline(m_file_signed, m_line);
-   string encrypted = m_line;
-   
-   cout << "encrypted: " << encrypted << endl << endl;
-
-    std::cout << "signed at the end of the doc!\n \n";
-    
-    BigInteger encrypted_BigInteger = stringToBigInteger(encrypted);
-    
-    //"encrypt" saved hash value (signature) using the public key stored in e_n.txt
-    BigUnsigned encrypted_sig =  modexp(encrypted_BigInteger, e_BigUnsigned, n_BigUnsigned);
-    
-    string encrypted_sig_string = bigIntegerToString(encrypted_sig);
-    cout << "encrypted sig: " << encrypted_sig_string << endl << endl;
-    
-    //Compare the SHA-256 hash value and the “encrypted” signature
-    if(sha != encrypted_sig_string) {
-        cout << "The document has been modified!" << endl;
+    try {
+        if(*argv[1] == 's') {
+            signFile(argv[2]);
+        }
+        
+        else if(*argv[1] == 'v') {
+            if(verify(argv[2], argv[3])) {
+                cout << "ckbekcjbwekfb" << endl;
+            }
+        }
+        else {
+            cout << "ckbekcjbwekfb" << endl;
+        }
     }
-    else
-        cout << "The document is authentic!" << endl;
-    
-    M_file.close();
-    d_n.close();
-    e_n.close();
-    p_q.close();
-    myfile.close();
     
     
     return 0;
