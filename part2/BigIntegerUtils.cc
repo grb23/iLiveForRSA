@@ -23,9 +23,9 @@ BigUnsigned stringToBigUnsigned10(const std::string &s) {
 
 BigInteger stringToBigInteger(const std::string &s) {
 	// Recognize a sign followed by a BigUnsigned.
-	return (s[0] == '-') ? BigInteger(stringToBigUnsigned(s.substr(1, s.length() - 1)), BigInteger::negative)
-		: (s[0] == '+') ? BigInteger(stringToBigUnsigned(s.substr(1, s.length() - 1)))
-		: BigInteger(stringToBigUnsigned(s));
+	return (s[0] == '-') ? BigInteger(stringToBigUnsigned10(s.substr(1, s.length() - 1)), BigInteger::negative)
+		: (s[0] == '+') ? BigInteger(stringToBigUnsigned10(s.substr(1, s.length() - 1)))
+		: BigInteger(stringToBigUnsigned10(s));
 }
 
 std::ostream &operator <<(std::ostream &os, const BigUnsigned &x) {
