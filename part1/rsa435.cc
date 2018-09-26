@@ -6,40 +6,50 @@
 #include <stdlib.h>
 #include <fstream>
 
-// `BigIntegerLibrary.hh' includes all of the library headers.
+// BigIntegerLibrary.hh' includes all of the library headers.
 #include "BigIntegerLibrary.hh"
 
-bool testPrime(BigUnsigned x, BigInteger a1, BigInteger a2) {
+//Test if is prime
+bool isPrime(BigUnsigned x, BigInteger a1, BigInteger a2) {
     
-    BigUnsigned test = modexp(a1, x-1, x);
+    //Initialize for testing
+    BigUnsigned testPrime = modexp(a1, x-1, x);
     
-    if(test == 1) {
-        test = modexp(a2, x-1, x);
-        if(test == 1) {
+    if(testPrime == 1) {
+        testPrime = modexp(a2, x-1, x);
+        if(testPrime == 1) {
+            //Passes both tests, is a prime
             return true;
         }
     }
+    //Failed, is not a prime
     return false;
 }
 
+//Generate large primes p and q
 BigUnsigned generate(BigUnsigned x, BigInteger a1, BigInteger a2) {
     
     while(1) {
         for(int i=0; i<278; i++) {
+            //Start with random large number
             x = (x*10) + (rand() % 10);
         }
+        //Make sure last digit is a 7
         x = (x*10)+7;
         
-        if(testPrime(x, a1, a2)) {
+        //If it is prime, break and return
+        if(isPrime(x, a1, a2)) {
             break;
         }
         else
+            //If it is not prime, start over
             x=BigUnsigned(1);
     }
     
     return x;
 }
 
+//Store in a file
 void writeToFile(BigUnsigned x, BigUnsigned y, std::string filename) {
     
     std::ofstream file;
@@ -51,15 +61,19 @@ void writeToFile(BigUnsigned x, BigUnsigned y, std::string filename) {
     return;
 }
 
+//Test that e is relatively prime to phi of n
 bool testE(BigUnsigned e, BigUnsigned phi_n) {
-    BigUnsigned irp = gcd(e, phi_n);
-    while(irp != 1) {
+    BigUnsigned r = gcd(e, phi_n);
+    //GCD of e and phi of n must be one
+    while(r != 1) {
+        //Skip all even numbers
         e=e+2;
         testE(e, phi_n);
-        std::cout << e << std::endl << std::endl;
-        irp = gcd(e, phi_n);
+//        std::cout << "e: " << e << std::endl << std::endl;
+        //reset remainder and check new e
+        r = gcd(e, phi_n);
     }
-    
+    //e is relatively prime
     return true;
 }
 
@@ -94,35 +108,40 @@ int main() {
 			<< err << std::endl;
 	}
         */
-        
+    
+        //Initialize p and q
         BigUnsigned p = BigUnsigned(1);
         BigUnsigned q = BigUnsigned(1);
+        //Pick two a values to test p and q
         BigInteger a1 = 2;
         BigInteger a2 = 7;
     
+        //Generate large prime p
         p = generate(p, a1, a2);
         std::cout << "p: " << p << '\n';
     
+        //Generate large prime q
         q = generate(q, a1, a2);
         std::cout << "q: " << q << '\n';
-        std::cout << "gosh gordon, we done it" << '\n';
-        
-//        p = testPrime(p, a1);
-//        p = testPrime(p, a2);
-//        q = testPrime(q, a1);
-//        q = testPrime(q, a2);
 
+        //Store p and q
         writeToFile(p, q, "p_q.txt");
-        
+    
+        //Compute n from p and q
         BigUnsigned n = p*q;
+        std::cout << "n: " << n << '\n';
+        //Compute phi of n from p and q
         BigUnsigned phi_n = (p-1)*(q-1);
         BigUnsigned e = 65537;
+        //Test that e is relatively prime to phi of n
         testE(e, phi_n);
         std::cout << "e: " << e << '\n';
-        
+    
+        //Compute public key d from e and phi of n
         BigUnsigned d = modinv(e, phi_n);
         std::cout << "d: " << d << '\n';
-        
+    
+        //Store private and public keys
         writeToFile(e, n, "e_n.txt");
         writeToFile(d, n, "d_n.txt");
         
