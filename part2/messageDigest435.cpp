@@ -26,7 +26,8 @@ void signFile(const char* file) {
     
     string sha = sha256(messageContent);
     cout << sha << endl;
-
+    
+    //Convert to base 16
     BigUnsigned sha_BigUnsigned = stringToBigUnsigned16(sha);
     cout << sha_BigUnsigned << endl;
 
@@ -43,13 +44,16 @@ void signFile(const char* file) {
     getline(d_n, line);
     string n = line;
     cout << "n: " << n << endl << endl;
-
+    
+    //Convert to base 10
     BigUnsigned d_BigUnsigned = stringToBigUnsigned10(d);
     BigUnsigned n_BigUnsigned = stringToBigUnsigned10(n);
-
+    
+    //Encrypt with private key
     BigUnsigned M = modexp(sha_BigUnsigned, d_BigUnsigned, n_BigUnsigned);
     cout << "M: " << M << endl;
-
+    
+    //Write signed encrypted message to file 
     ofstream M_file;
     M_file.open ("M_file.txt.signed");
     M_file << M << endl;
@@ -83,21 +87,23 @@ bool verifySig(const char* message, const char* signedFile) {
     ifstream e_n;
     e_n.open("e_n.txt");
     
-    //get e from Public Key
+    //get e from public key
     getline(e_n, line);
     string e = line;
     cout << "e: " << e << endl << endl;
     
-    //get n from Public Key
+    //get n from public key
     getline(e_n, line);
     string n = line;
     cout << "n: " << n << endl << endl;
     
+    //Convert to base 10
     BigUnsigned e_BigUnsigned = stringToBigUnsigned10(e);
     BigUnsigned n_BigUnsigned = stringToBigUnsigned10(n);
     
     e_n.close();
     
+    //Decrypt using the public key
     BigUnsigned decrypt = modexp(sig_BigUnsigned, e_BigUnsigned, n_BigUnsigned);
     cout << "decrypt: " << decrypt << endl;
     

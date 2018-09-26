@@ -12,7 +12,9 @@
 // std::string conversion routines.  Base 10 only.
 std::string bigUnsignedToString(const BigUnsigned &x);
 std::string bigIntegerToString(const BigInteger &x);
+//made a new base 10 fn()
 BigUnsigned stringToBigUnsigned10(const std::string &s);
+//made a new base 16 fn()
 BigUnsigned stringToBigUnsigned16(const std::string &s);
 BigInteger stringToBigInteger(const std::string &s);
 
