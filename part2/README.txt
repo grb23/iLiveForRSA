@@ -2,9 +2,11 @@
 
 Author: Gwendolyn Brunot
 
-use make clean
+To compile:
+make
 
-make all
+To sign a file:
+./messageDigest435 s fileName
 
-to run:
-./sha
+To verify the file:
+./messageDigest435 v M_file.txt.signed
