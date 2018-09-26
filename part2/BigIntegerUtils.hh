@@ -10,10 +10,10 @@
  * - std::ostream << operators for BigUnsigned/BigInteger */
 
 // std::string conversion routines.  Base 10 only.
-std::string bigUnsignedToString10(const BigUnsigned &x);
-std::string bigUnsignedToString16(const BigUnsigned &x);
+std::string bigUnsignedToString(const BigUnsigned &x);
 std::string bigIntegerToString(const BigInteger &x);
-BigUnsigned stringToBigUnsigned(const std::string &s);
+BigUnsigned stringToBigUnsigned10(const std::string &s);
+BigUnsigned stringToBigUnsigned16(const std::string &s);
 BigInteger stringToBigInteger(const std::string &s);
 
 // Creates a BigInteger from data such as `char's; read below for details.
