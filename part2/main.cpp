@@ -100,7 +100,7 @@ bool verifySig(const char* message, const char* signedFile) {
     
     e_n.close();
     
-    sig_BigUnsigned decrypt = modexp(sig_BigUnsigned, e_BigUnsigned, n_BigUnsigned);
+    BigUnsigned decrypt = modexp(sig_BigUnsigned, e_BigUnsigned, n_BigUnsigned);
     cout << "decrypt: " << decrypt << endl;
     
     if(decrypt == temp_BigUnsigned) {
