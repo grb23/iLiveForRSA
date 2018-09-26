@@ -17,13 +17,14 @@ using namespace std;
 
 void signFile(const char* file) {
     std::ifstream myfile (file, std::ios::binary);
-    std::string data((std::istreambuf_iterator<char>(myfile)), std::istreambuf_iterator<char>());
-    if(data.empty()) {
+    std::string messageContent((std::istreambuf_iterator<char>(myfile)), std::istreambuf_iterator<char>());
+    if(messageContent.empty()) {
+        //don't attempt to encrypt empty files
         throw("Invalid file.");
     }
     myfile.close();
-
-    string sha = sha256(data);
+    
+    string sha = sha256(messageContent);
     cout << sha << endl;
 
     BigUnsigned sha_BigUnsigned = stringToBigUnsigned16(sha);
@@ -57,17 +58,17 @@ void signFile(const char* file) {
 
 bool verifySig(const char* message, const char* signedFile) {
     std::ifstream file(message, std::ios::binary);
-    std::string data((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-    if(data.empty()) {
+    std::string messageContent((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+    if(messageContent.empty()) {
         throw("invalid file");
     }
     file.close();
     
-    string temp = sha256(data);
-    cout << "temp: " << temp << endl;
+    string messageContentHash = sha256(messageContent);
+    cout << "messageContentHash: " << messageContentHash << endl;
     
-    BigUnsigned temp_BigUnsigned = stringToBigUnsigned16(temp);
-    cout << temp_BigUnsigned << endl;
+    BigUnsigned messageContentHash_BigUnsigned = stringToBigUnsigned16(messageContentHash);
+    cout << "messageContentHash_BigUnsigned: " << messageContentHash_BigUnsigned << endl;
     
     std::ifstream signedFileIn;
     signedFileIn.open(signedFile);
@@ -100,7 +101,7 @@ bool verifySig(const char* message, const char* signedFile) {
     BigUnsigned decrypt = modexp(sig_BigUnsigned, e_BigUnsigned, n_BigUnsigned);
     cout << "decrypt: " << decrypt << endl;
     
-    if(decrypt == temp_BigUnsigned) {
+    if(decrypt == messageContentHash_BigUnsigned) {
         return true;
     }
     else
