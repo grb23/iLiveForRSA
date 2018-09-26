@@ -80,7 +80,7 @@ bool verifySig(const char* message, const char* signedFile) {
     
     BigUnsigned sig_BigUnsigned = stringToBigUnsigned10(line);
     cout << "sig_BigUnsigned: " << sig_BigUnsigned << endl;
-    signedFile.close();
+    signedFileIn.close();
     
     ifstream e_n;
     e_n.open("e_n.txt");
