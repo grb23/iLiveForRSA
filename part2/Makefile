@@ -51,7 +51,7 @@ testsuite-cleanfiles = \
 # your own Makefile.
 
 # Components of the program.
-program = sha256 main
+program = sha256 messageDigect435
 program-objects = sha256.o messageDigest435.o
 
 # Conservatively assume all the program source files depend on all the library
