@@ -1,9 +1,6 @@
 /***
-compile and run (in linux):
-g++ sha256.cpp main.cpp -o sha256_example && ./sha256_example
-Output:
-sha256('grape'): 0f78fcc486f5315418fbf095e71c0675ee07d318e5ac4d150050cd8e57966496
-**/
+ prepared for CS435 Project 1 part 2
+ **/
 
 #include <iostream>
 #include <fstream>
@@ -20,15 +17,17 @@ using namespace std;
 
 void signFile(const char* file) {
     std::ifstream myfile (file, std::ios::binary);
-    std::string data((std::istreambuf_iterator<char>(myfile)), std::istreambuf_iterator<char>());
-    if(data.empty()) {
+    std::string messageContent((std::istreambuf_iterator<char>(myfile)), std::istreambuf_iterator<char>());
+    if(messageContent.empty()) {
+        //don't attempt to encrypt empty files
         throw("Invalid file.");
     }
     myfile.close();
-
-    string sha = sha256(data);
+    
+    string sha = sha256(messageContent);
     cout << sha << endl;
-
+    
+    //Convert to base 16
     BigUnsigned sha_BigUnsigned = stringToBigUnsigned16(sha);
     cout << sha_BigUnsigned << endl;
 
@@ -45,32 +44,35 @@ void signFile(const char* file) {
     getline(d_n, line);
     string n = line;
     cout << "n: " << n << endl << endl;
-
+    
+    //Convert to base 10
     BigUnsigned d_BigUnsigned = stringToBigUnsigned10(d);
     BigUnsigned n_BigUnsigned = stringToBigUnsigned10(n);
-
+    
+    //Encrypt with private key
     BigUnsigned M = modexp(sha_BigUnsigned, d_BigUnsigned, n_BigUnsigned);
     cout << "M: " << M << endl;
-
+    
+    //Write signed encrypted message to file 
     ofstream M_file;
-    M_file.open ("M_file.txt.signature");
+    M_file.open ("M_file.txt.signed");
     M_file << M << endl;
     M_file.close();
 }
 
 bool verifySig(const char* message, const char* signedFile) {
     std::ifstream file(message, std::ios::binary);
-    std::string data((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-    if(data.empty()) {
+    std::string messageContent((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+    if(messageContent.empty()) {
         throw("invalid file");
     }
     file.close();
     
-    string temp = sha256(data);
-    cout << "temp: " << temp << endl;
+    string messageContentHash = sha256(messageContent);
+    cout << "messageContentHash: " << messageContentHash << endl;
     
-    BigUnsigned temp_BigUnsigned = stringToBigUnsigned16(temp);
-    cout << temp_BigUnsigned << endl;
+    BigUnsigned messageContentHash_BigUnsigned = stringToBigUnsigned16(messageContentHash);
+    cout << "messageContentHash_BigUnsigned: " << messageContentHash_BigUnsigned << endl;
     
     std::ifstream signedFileIn;
     signedFileIn.open(signedFile);
@@ -85,25 +87,27 @@ bool verifySig(const char* message, const char* signedFile) {
     ifstream e_n;
     e_n.open("e_n.txt");
     
-    //get e from Public Key
+    //get e from public key
     getline(e_n, line);
     string e = line;
     cout << "e: " << e << endl << endl;
     
-    //get n from Public Key
+    //get n from public key
     getline(e_n, line);
     string n = line;
     cout << "n: " << n << endl << endl;
     
+    //Convert to base 10
     BigUnsigned e_BigUnsigned = stringToBigUnsigned10(e);
     BigUnsigned n_BigUnsigned = stringToBigUnsigned10(n);
     
     e_n.close();
     
+    //Decrypt using the public key
     BigUnsigned decrypt = modexp(sig_BigUnsigned, e_BigUnsigned, n_BigUnsigned);
     cout << "decrypt: " << decrypt << endl;
     
-    if(decrypt == temp_BigUnsigned) {
+    if(decrypt == messageContentHash_BigUnsigned) {
         return true;
     }
     else
@@ -142,6 +146,60 @@ BigInteger convertHash(string hash, int pos) {
  
 int main(int argc, char *argv[])
 {
+    /*
+     //demonstrating how sha256 works
+     std::string input = "testing";
+     std::string output1 = sha256(input);
+     std::cout << "sha256('"<< input << "'):" << output1 << "\n";
+     
+     //demo bigInt works here
+     BigUnsigned a = stringToBigUnsigned("124338907642982722929222542626327282");
+     BigUnsigned b = stringToBigUnsigned("124338907642977775546469426263278643");
+     std::cout << "big a = " <<a<<"\n";
+     std::cout << "big b = " <<b<<"\n";
+     std::cout << "big a*b = " <<a*b<<"\n";
+     
+     //Second part of your project starts here
+     if (argc != 3 || (argv[1][0]!='s' && argv[1][0]!='v'))
+     std::cout << "wrong format! should be \"a.exe s filename\"";
+     else {
+     std::string filename = argv[2];
+     
+     
+     //read the file
+     std::streampos begin,end;
+     std::ifstream myfile (filename.c_str(), std::ios::binary);
+     begin = myfile.tellg();
+     myfile.seekg (0, std::ios::end);
+     end = myfile.tellg();
+     std::streampos size = end-begin;
+     //std::cout << "size of the file: " << size << " bytes.\n"; //size of the file
+     
+     myfile.seekg (0, std::ios::beg);
+     char * memblock = new char[size];
+     myfile.read (memblock, size); //read file; it's saved in the char array memblock
+     myfile.close();
+     
+     std::string copyOFfile = filename+".Copy";
+     std::ofstream myfile2 (copyOFfile.c_str(), std::ios::binary);
+     myfile2.write (memblock, size); //write to a file
+     myfile2.close();
+     
+     //std::cout<<memblock;
+     
+     if (argv[1][0]=='s') {
+     std::cout << "\n"<<"Need to sign the doc.\n";
+     //.....
+     
+     }
+     else {
+     std::cout << "\n"<<"Need to verify the doc.\n";
+     //.....
+     
+     }
+     delete[] memblock;
+     }
+     */
     
     try {
         if(*argv[1] == 's') {
